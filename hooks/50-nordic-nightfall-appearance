@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+theme_slug="${1:-}"
+theme_dir="$HOME/.local/state/omarchy/current/theme"
+state_dir="$HOME/.local/state/omarchy/nordic-nightfall-appearance"
+
+mkdir -p "$state_dir"
+
+# Save the user's GTK styles only once so they can be restored when leaving
+# Nordic Nightfall. A marker records when an original stylesheet was absent.
+if [[ ! -e "$state_dir/baseline-captured" ]]; then
+  for version in gtk-3.0 gtk-4.0; do
+    config="$HOME/.config/$version/gtk.css"
+    if [[ -f "$config" ]]; then
+      cp -- "$config" "$state_dir/$version.css"
+      touch "$state_dir/$version.present"
+    else
+      touch "$state_dir/$version.absent"
+    fi
+  done
+  touch "$state_dir/baseline-captured"
+fi
+
+if [[ "$theme_slug" == "nordic-nightfall" ]]; then
+  for version in gtk-3.0 gtk-4.0; do
+    mkdir -p "$HOME/.config/$version"
+    cp -- "$theme_dir/gtk/$version/gtk.css" "$HOME/.config/$version/gtk.css"
+  done
+
+  icon_source="$theme_dir/icons/Nordic-Nightfall"
+  icon_target="$HOME/.local/share/icons/Nordic-Nightfall"
+  mkdir -p "$icon_target"
+  cp -a "$icon_source/." "$icon_target/"
+  gtk-update-icon-cache -f -t "$icon_target" >/dev/null 2>&1 || true
+  gsettings set org.gnome.desktop.interface icon-theme "Nordic-Nightfall"
+else
+  for version in gtk-3.0 gtk-4.0; do
+    config="$HOME/.config/$version/gtk.css"
+    if [[ -f "$state_dir/$version.present" ]]; then
+      mkdir -p "$HOME/.config/$version"
+      cp -- "$state_dir/$version.css" "$config"
+    else
+      rm -f -- "$config"
+    fi
+  done
+fi
