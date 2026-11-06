@@ -1,0 +1,34 @@
+/* Files-only colors; scope every selector to Nautilus' window class. */
+window.nautilus-window,
+window.nautilus-window.background {
+  background-color: #101b25;
+  color: #cbd6dc;
+}
+
+window.nautilus-window headerbar,
+window.nautilus-window .titlebar {
+  background-color: #182632;
+  color: #cbd6dc;
+}
+
+window.nautilus-window placessidebar,
+window.nautilus-window .sidebar,
+window.nautilus-window .navigation-sidebar {
+  background-color: #182632;
+  color: #cbd6dc;
+}
+
+window.nautilus-window view,
+window.nautilus-window textview,
+window.nautilus-window treeview,
+window.nautilus-window iconview {
+  background-color: #101b25;
+  color: #cbd6dc;
+}
+
+window.nautilus-window view:selected,
+window.nautilus-window textview text selection,
+window.nautilus-window treeview.view:selected {
+  background-color: #2a3f4f;
+  color: #dce5e9;
+}
